@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type RequestHandler } from "express";
 import {
   RequestUploadUrlBody,
   RequestUploadUrlResponse,
@@ -34,7 +34,13 @@ router.post(
   },
 );
 
-router.get("/storage/objects/*path", requireAuth, async (req, res) => {
+export const privateObjectCachePolicy: RequestHandler = (_req, res, next) => {
+  // Authorization can change after cancellation. Never reuse private photo bytes.
+  res.setHeader("Cache-Control", "private, no-store");
+  next();
+};
+
+export const servePrivateObject: RequestHandler = async (req, res) => {
   const raw = req.params.path;
   const path = Array.isArray(raw) ? raw.join("/") : raw;
   const objectPath = `/objects/${path}`;
@@ -73,7 +79,6 @@ router.get("/storage/objects/*path", requireAuth, async (req, res) => {
     const file = await storage.getFile(objectPath);
     const download = await storage.download(file);
     res.setHeader("Content-Type", download.contentType);
-    res.setHeader("Cache-Control", "private, max-age=300");
     if (download.size) res.setHeader("Content-Length", download.size);
     download.stream.pipe(res);
   } catch (error) {
@@ -84,6 +89,13 @@ router.get("/storage/objects/*path", requireAuth, async (req, res) => {
     req.log.error({ err: error }, "Failed to serve private object");
     res.status(500).json({ error: "Failed to serve object" });
   }
-});
+};
+
+router.get(
+  "/storage/objects/*path",
+  privateObjectCachePolicy,
+  requireAuth,
+  servePrivateObject,
+);
 
 export default router;

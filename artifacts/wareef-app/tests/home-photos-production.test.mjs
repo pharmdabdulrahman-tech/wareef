@@ -10,63 +10,177 @@ import { preview } from 'vite';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const run = promisify(execFile);
-const names = ['ghars-garden.jpg', 'wareef-garden-sunrise.jpg'];
+const names = [
+  'ghars-garden.jpg',
+  'wareef-garden-sunrise.jpg',
+  'wareef-garden-water.jpg',
+];
 
-// Inspect emitted JSX calls without executing the app (and therefore Clerk).
-// Resolve only the string/base expressions used by the photos, never arbitrary JS.
+function namedProperty(object, name) {
+  return object.properties.find(item =>
+    ts.isPropertyAssignment(item) &&
+    (ts.isIdentifier(item.name) || ts.isStringLiteral(item.name)) &&
+    item.name.text === name)?.initializer;
+}
+
+function functionScope(node) {
+  for (let current = node.parent; current; current = current.parent) {
+    if (ts.isFunctionLike(current) || ts.isSourceFile(current)) return current;
+  }
+}
+
+// Resolve an identifier lexically enough for minified const declarations without
+// depending on their generated names.
+function declarationFor(identifier, declarations) {
+  const usageScopes = [];
+  for (let node = identifier; node; node = node.parent) {
+    if (ts.isFunctionLike(node) || ts.isSourceFile(node)) usageScopes.push(node);
+  }
+  for (const scope of usageScopes) {
+    const matches = declarations.filter(item =>
+      item.name.text === identifier.text &&
+      functionScope(item) === scope &&
+      item.pos < identifier.pos);
+    if (matches.length) return matches.at(-1);
+  }
+}
+
+function staticClassValues(node) {
+  if (!node) return [];
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return [node.text];
+  if (ts.isConditionalExpression(node)) {
+    return [
+      ...staticClassValues(node.whenTrue),
+      ...staticClassValues(node.whenFalse),
+    ];
+  }
+  return [];
+}
+
+// Inspect only the emitted img template carrying the stable hero-photo class.
+// The evaluator supports a deliberately tiny expression language and never runs
+// bundle code.
 function builtPhotoPaths(source) {
   const file = ts.createSourceFile('bundle.js', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
-  const declarations = new Map();
-  const images = [];
+  const declarations = [];
+  const heroImages = [];
   function visit(node) {
-    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name)) {
-      declarations.set(node.name.text, node.initializer);
+    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && node.initializer) {
+      declarations.push(node);
     }
     if (ts.isCallExpression(node) && node.arguments[0] &&
-        ts.isStringLiteral(node.arguments[0]) && node.arguments[0].text === 'img') {
-      const props = node.arguments[1];
-      if (props && ts.isObjectLiteralExpression(props)) {
-        const src = props.properties.find(prop => ts.isPropertyAssignment(prop) &&
-          (ts.isIdentifier(prop.name) || ts.isStringLiteral(prop.name)) && prop.name.text === 'src');
-        if (src) images.push(src.initializer);
+        ts.isStringLiteral(node.arguments[0]) && node.arguments[0].text === 'img' &&
+        node.arguments[1] && ts.isObjectLiteralExpression(node.arguments[1])) {
+      const className = namedProperty(node.arguments[1], 'className');
+      if (className && staticClassValues(className).some(value =>
+        value.split(/\s+/).includes('hero-photo'))) {
+        heroImages.push(node);
       }
     }
     ts.forEachChild(node, visit);
   }
   visit(file);
-  function value(node, depth = 0) {
-    assert.ok(node && depth < 10, 'Photo URL must be statically resolvable');
+  assert.equal(heroImages.length, 1,
+    'Compiled homepage must contain one mapped hero-photo image template');
+  const hero = heroImages[0];
+
+  let mapCall;
+  for (let node = hero.parent; node; node = node.parent) {
+    if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) &&
+        node.expression.name.text === 'map') {
+      mapCall = node;
+      break;
+    }
+  }
+  assert.ok(mapCall, 'Compiled hero-photo must be produced by slides.map');
+  const callback = mapCall.arguments[0];
+  assert.ok(callback && (ts.isArrowFunction(callback) || ts.isFunctionExpression(callback)) &&
+    ts.isIdentifier(callback.parameters[0]?.name),
+  'Compiled slideshow map must expose its image path');
+  const imageParameter = callback.parameters[0].name.text;
+
+  const src = namedProperty(hero.arguments[1], 'src');
+  assert.ok(src && ts.isCallExpression(src) && ts.isIdentifier(src.expression) &&
+    src.arguments.length === 1 && ts.isIdentifier(src.arguments[0]) &&
+    src.arguments[0].text === imageParameter,
+  'Compiled hero src must pass the mapped slide through a static asset helper');
+
+  function value(node, environment = new Map(), depth = 0) {
+    assert.ok(node && depth < 12, 'Hero photo URL must be statically resolvable');
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
-    if (ts.isIdentifier(node)) return value(declarations.get(node.text), depth + 1);
+    if (ts.isArrayLiteralExpression(node)) {
+      return node.elements.map(element => value(element, environment, depth + 1));
+    }
+    if (ts.isIdentifier(node)) {
+      if (environment.has(node.text)) return environment.get(node.text);
+      const declaration = declarationFor(node, declarations);
+      assert.ok(declaration, `No static declaration for hero value ${node.text}`);
+      return value(declaration.initializer, environment, depth + 1);
+    }
     if (ts.isTemplateExpression(node)) {
       return node.head.text + node.templateSpans.map(span =>
-        value(span.expression, depth + 1) + span.literal.text).join('');
+        value(span.expression, environment, depth + 1) + span.literal.text).join('');
     }
     if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) &&
         node.expression.name.text === 'replace' && node.arguments.length === 2 &&
         node.arguments[0].getText(file) === '/\\/$/' &&
         ts.isStringLiteral(node.arguments[1]) && node.arguments[1].text === '') {
-      return value(node.expression.expression, depth + 1).replace(/\/$/, '');
+      const input = value(node.expression.expression, environment, depth + 1);
+      assert.equal(typeof input, 'string', 'replace input must be a static string');
+      return input.replace(/\/$/, '');
     }
-    assert.fail(`Unsupported compiled photo expression: ${node.getText(file)}`);
+    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) {
+      const declaration = declarationFor(node.expression, declarations);
+      const helper = declaration?.initializer;
+      assert.ok(helper && (ts.isArrowFunction(helper) || ts.isFunctionExpression(helper)) &&
+        helper.parameters.every(parameter => ts.isIdentifier(parameter.name)),
+      'Hero asset helper must be a statically analyzable function');
+      const body = ts.isBlock(helper.body)
+        ? helper.body.statements.find(statement => ts.isReturnStatement(statement))?.expression
+        : helper.body;
+      assert.ok(body, 'Hero asset helper must return a value');
+      const next = new Map(environment);
+      helper.parameters.forEach((parameter, index) => {
+        next.set(parameter.name.text, value(node.arguments[index], environment, depth + 1));
+      });
+      return value(body, next, depth + 1);
+    }
+    if (ts.isParenthesizedExpression(node)) return value(node.expression, environment, depth + 1);
+    assert.fail(`Unsupported compiled hero expression: ${node.getText(file)}`);
   }
-  return images.map(node => value(node));
+
+  assert.ok(ts.isPropertyAccessExpression(mapCall.expression),
+    'Compiled slideshow must use a property map call');
+  const slides = value(mapCall.expression.expression);
+  assert.ok(Array.isArray(slides), 'Compiled slideshow source must resolve to an array');
+  return slides.map(image => {
+    assert.equal(typeof image, 'string', 'Every compiled slide must be a static string');
+    const environment = new Map([[imageParameter, image]]);
+    return value(src, environment);
+  });
 }
 
 function assertPhotoPaths(source, base) {
   const paths = builtPhotoPaths(source);
   assert.deepEqual(paths, names.map(name => `${base}images/${name}`),
-    'Compiled home photos must use the real app base, never /__mockup or a root-only URL');
+    'Compiled homepage photos must use the real app base and contain all three slides');
   return paths;
 }
 
-test('production guard rejects wrong-base, mockup and missing image links', () => {
-  const fixture = 'const base="/wareef/".replace(/\\/$/,"");' +
-    names.map(name => `jsx("img",{src:\`\${base}/images/${name}\`});`).join('');
-  assertPhotoPaths(fixture, '/wareef/');
-  assert.throws(() => assertPhotoPaths(fixture.replace('"/wareef/"', '"/"'), '/wareef/'));
-  assert.throws(() => assertPhotoPaths(fixture.replace('"/wareef/"', '"/__mockup/"'), '/wareef/'));
-  assert.throws(() => assertPhotoPaths(fixture.replace(names[0], 'missing.jpg'), '/wareef/'));
+function fixture(base = '/wareef/', slides = names, src = 'asset(image)') {
+  return `const base=${JSON.stringify(base)}.replace(/\\/$/,"");` +
+    'const asset=path=>`${base}${path}`;' +
+    `const slides=${JSON.stringify(slides.map(name => `/images/${name}`))};` +
+    `slides.map((image,index)=>jsx("img",{className:index?"hero-photo":"hero-photo current",src:${src}}));` +
+    'jsx("img",{src:product.image});';
+}
+
+test('production guard rejects wrong-base, mockup, missing slides, and unsupported dynamic hero src', () => {
+  assertPhotoPaths(fixture(), '/wareef/');
+  assert.throws(() => assertPhotoPaths(fixture('/'), '/wareef/'));
+  assert.throws(() => assertPhotoPaths(fixture('/__mockup/'), '/wareef/'));
+  assert.throws(() => assertPhotoPaths(fixture('/wareef/', names.slice(0, 2)), '/wareef/'));
+  assert.throws(() => assertPhotoPaths(fixture('/wareef/', names, 'window.photo(image)'), '/wareef/'));
 });
 
 // Sequential builds share the real output directory; finish with the normal root build.
@@ -78,7 +192,6 @@ test('publish-ready garden photos', { timeout: 120_000 }, async t => {
         env: { ...process.env, NODE_ENV: 'production', PORT: '4173', BASE_PATH: base },
         timeout: 60_000,
       });
-      // Only dist/public is served here, not source/public or the mockup service.
       const server = await preview({
         configFile: false, root, base, logLevel: 'silent',
         build: { outDir: 'dist/public' },
@@ -93,7 +206,8 @@ test('publish-ready garden photos', { timeout: 120_000 }, async t => {
         assert.equal(htmlResponse.status, 200);
         const html = await htmlResponse.text();
         const entry = html.match(/<script\b[^>]*\bsrc="([^"]+)"[^>]*>/)?.[1];
-        assert.ok(entry?.startsWith(`${base}assets/`), 'Built HTML must load its app bundle under the base');
+        assert.ok(entry?.startsWith(`${base}assets/`),
+          'Built HTML must load its app bundle under the base');
         const bundleResponse = await get(entry);
         assert.equal(bundleResponse.status, 200);
         assert.match(bundleResponse.headers.get('content-type') ?? '', /javascript/);

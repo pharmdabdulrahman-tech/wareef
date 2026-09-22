@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Wareef | وريف"
+description = "The production Wareef gardening marketplace web application for customers, approved shop owners, and administrators. This first milestone establishes secure accounts, role-based access, and permanent user profiles."
+version = "1.0.0"
+id = "artifacts/wareef-app"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 26162
+
+[services.development]
+run = "pnpm --filter @workspace/wareef-app run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/wareef-app", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/wareef-app/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26162"
+BASE_PATH = "/"

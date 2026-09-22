@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --background: 44 32% 96%;
+  --foreground: 150 25% 17%;
+  --card: 42 38% 99%;
+  --card-foreground: 150 25% 17%;
+  --border: 102 22% 85%;
+  --input: 102 22% 85%;
+  --ring: 146 48% 31%;
+  --primary: 146 48% 31%;
+  --primary-foreground: 44 32% 97%;
+  --secondary: 94 35% 91%;
+  --secondary-foreground: 146 48% 24%;
+  --muted: 92 16% 91%;
+  --muted-foreground: 153 12% 40%;
+  --accent: 38 73% 59%;
+  --accent-foreground: 150 25% 17%;
+  --destructive: 5 54% 43%;
+  --destructive-foreground: 0 0% 100%;
+  --popover: 42 38% 99%;
+  --popover-foreground: 150 25% 17%;
+  --radius: 1rem;
+  --app-font-sans: 'Manrope', sans-serif;
+  --app-font-ar: 'Alexandria', sans-serif;
+  --app-font-mono: 'DM Mono', monospace;
+}
+.dark { --background: 150 25% 11%; --foreground: 44 32% 96%; --card: 150 22% 15%; --card-foreground: 44 32% 96%; --border: 150 15% 26%; --muted: 150 15% 22%; --muted-foreground: 100 12% 70%; }
+body { margin: 0; background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: var(--app-font-sans); }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+
+.customer-app{--primary:#1f5c43;--hover:#174733;--soft:#eaf3e8;--bg:#f8faf6;--surface:#fff;--ink:#1f2f26;--muted:#5f7065;--line:#dee8dd;min-height:100dvh;background:var(--bg);color:var(--ink);font-family:Manrope,Alexandria,system-ui,sans-serif;padding-bottom:78px}
+.customer-app *{box-sizing:border-box}
+.customer-app button,.customer-app input,.customer-app textarea{font:inherit}
+
+.ghars{--moss:var(--primary);--pine:var(--primary);--clay:var(--primary);--sand:var(--bg);--paper:var(--surface)}
+.ghars{--primary:#1F5C43;--primary-hover:#174733;--soft:#EAF3E8;--bg:#F8FAF6;--surface:#FFFFFF;--ink:#1F2F26;--muted:#5F7065;--line:#DEE8DD;--amber:#916811;--amber-bg:#fff6db;--red:#a13d35;--red-bg:#fbe9e7;font-family:Alexandria,system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100dvh;letter-spacing:-.02em}
+.ghars *{box-sizing:border-box}
+.ghars button,.ghars input,.ghars textarea,.ghars select{font:inherit}
+.ghars button{cursor:pointer;min-height:40px}
+.ghars button:focus-visible,.ghars input:focus-visible,.ghars textarea:focus-visible,.ghars select:focus-visible{outline:3px solid #8db69d;outline-offset:2px}
+.ghars button:disabled{opacity:.48;cursor:not-allowed}
+.ghars .shell{max-width:1120px;margin:auto;min-height:100dvh;background:var(--bg);overflow:hidden}
+.ghars h1{font-size:30px;line-height:1.35;margin:11px 0 8px;max-width:330px}
+.ghars .services{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.ghars .small{font-size:10px;color:var(--muted);margin:4px 0}
+.ghars .screen{padding:2px 16px 92px}
+@media(min-width:700px){.ghars .shell{max-width:100%}.ghars h1{font-size:40px}.ghars .services{max-width:560px}}
+
+.ghars{--control-border:#cfe0ce;--control-surface:#fcfdf9;--control-soft:#eef6eb;--focus:#1f5c43;font-family:Manrope,Alexandria,system-ui,sans-serif}
+.ghars :is(button,input,textarea,select){-webkit-tap-highlight-color:transparent}
+.ghars button{transition:transform .16s ease,background-color .16s ease,border-color .16s ease,color .16s ease}
+.ghars button:not(:disabled):active{transform:scale(.985)}
+.ghars :is(button,input,textarea,select):focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.ghars button{transition:none}.ghars button:not(:disabled):active{transform:none}}
+
+.wareef-customer{--wareef-control-border:#cfe0ce;--wareef-control-surface:#fcfdf9;--wareef-control-soft:#eef6eb;--wareef-control-ink:#1f5c43}
+.wareef-customer :is(button,input,textarea,select){-webkit-tap-highlight-color:transparent}
+.wareef-customer button{transition:transform .16s ease,background-color .16s ease,border-color .16s ease,color .16s ease}
+.wareef-customer button:not([disabled]):active{transform:scale(.985)}
+.wareef-customer button:focus-visible,.wareef-customer input:focus-visible,.wareef-customer textarea:focus-visible,.wareef-customer select:focus-visible{outline:2px solid #1f5c43;outline-offset:3px}
+.wareef-customer .needs-grid .need-card{box-shadow:0 4px 14px rgba(31,92,67,.035)}
+.wareef-customer .needs-grid .need-card:focus-visible{outline:2px solid var(--wareef-control-ink);outline-offset:3px}
+.wareef-customer .shell{scroll-padding-bottom:96px;padding-bottom:96px}
+@media (prefers-reduced-motion:reduce){.wareef-customer button{transition:none}}
+
+.wareef-customer .needs-hub{padding-top:22px}
+.wareef-customer .hub-intro{position:relative;overflow:hidden;padding:18px 17px 16px;border:1px solid #d9e7d7;border-radius:19px;background:#f2f8ef}
+.wareef-customer .hub-intro::after{content:"";position:absolute;top:-34px;inset-inline-end:-25px;width:112px;height:112px;border:18px solid #dcebd9;border-radius:50%;opacity:.8}
+.wareef-customer .hub-kicker{position:relative;z-index:1;margin:0;color:#4d7b59;font:800 9px 'DM Mono',monospace;letter-spacing:.12em}
+.wareef-customer .needs-hub .form-title{position:relative;z-index:1;margin:7px 0 3px;font-size:24px}
+.wareef-customer .needs-hub .small{position:relative;z-index:1;margin:0;color:#587060;font-size:11px}
+.wareef-customer .needs-grid{display:grid;gap:10px;margin-top:18px}
+.wareef-customer .need-card{display:grid;grid-template-columns:53px minmax(0,1fr) 42px;align-items:center;gap:13px;width:100%;min-height:82px;padding:11px 13px;border:1px solid #d4e4d2;border-radius:17px;background:#fcfdf9;color:#1f5c43;text-align:start;font-family:inherit;cursor:pointer;transition:transform .18s ease,background .18s ease}
+.wareef-customer .need-card:hover{transform:translateY(-2px);background:#f4f9f2}
+.wareef-customer .need-card.products{background:#fbfcf7}
+.wareef-customer .need-card.subscriptions{background:#f0f7ed;border-color:#c7dfc5}
+.wareef-customer .need-icon{display:grid;place-items:center;width:53px;height:53px;border-radius:15px;background:#e3f0e1;color:#1e6244}
+.wareef-customer .need-card.products .need-icon{background:#edf1dc;color:#64762e}
+.wareef-customer .need-card.subscriptions .need-icon{background:#dceee2;color:#286546}
+.wareef-customer .need-icon svg{width:24px;height:24px}
+.wareef-customer .need-card b,.wareef-customer .need-card small{display:block}
+.wareef-customer .need-card b{font-size:15px}
+.wareef-customer .need-card small{margin-top:3px;color:#607564;font-size:10px;line-height:1.45}
+.wareef-customer .need-card i{display:grid;place-items:center;width:38px;height:38px;border:1px solid #c7dcc7;border-radius:50%;background:#f7fbf5;color:#1f5c43;font-size:23px;font-style:normal;font-weight:700;line-height:1}
+.wareef-customer .need-card.products i{border-color:#d9e2c2;background:#f8faef;color:#62752f}
+.wareef-customer .need-card.subscriptions i{border-color:#bdd8c2;background:#f7fcf5;color:#286546}
+.wareef-customer .need-card:focus-visible{outline:2px solid #1f5c43;outline-offset:3px}
+
+.wareef-customer .services{grid-template-columns:repeat(5,minmax(0,1fr))}
+.wareef-customer .needs-grid .need-card.services{grid-template-columns:53px minmax(0,1fr) 42px}
+.wareef-customer{font-family:Manrope,Alexandria,system-ui,sans-serif}
+.wareef-customer .form-title{color:var(--ink);font-size:25px}
+
+/* Hub refinement: prevent the home-page `.services` grid from leaking into the service choice card. */
+.wareef-customer .needs-hub.hub-refined{width:100%;max-width:736px;margin-inline:auto;padding-inline:16px;padding-top:18px}
+.wareef-customer .hub-refined .hub-intro{padding:15px 17px 14px;border-radius:18px}
+.wareef-customer .hub-refined .needs-grid{width:100%;gap:9px;margin-top:17px}
+.wareef-customer .hub-refined .needs-grid>.need-card,
+.wareef-customer .hub-refined .needs-grid>.need-card.services{display:grid;grid-template-columns:48px minmax(0,1fr) 40px;gap:12px;width:100%;max-width:none;min-width:0;min-height:77px;margin:0;padding:10px 12px;border-radius:16px}
+.wareef-customer .hub-refined .need-icon{width:48px;height:48px;border-radius:14px}
+.wareef-customer .hub-refined .need-icon svg{width:22px;height:22px}
+.wareef-customer .hub-refined .need-copy{min-width:0}
+.wareef-customer .hub-refined .need-card b{font-size:14px;line-height:1.35}
+.wareef-customer .hub-refined .need-card small{font-size:9.5px;line-height:1.5;white-space:normal}
+.wareef-customer .hub-refined .need-card i{width:36px;height:36px;font-size:20px}
+.wareef-customer .hub-refined .need-card i svg{width:18px;height:18px}
+.wareef-customer .hub-refined .need-card.subscriptions{opacity:1;background:#f3f8f1;border-color:#d4e3d3;color:#76917b}
+.wareef-customer .hub-refined .need-card.subscriptions .need-copy b{color:#6b8872}
+.wareef-customer .hub-refined .need-card.subscriptions small{color:#809185}
+.wareef-customer .hub-refined .need-card.subscriptions .need-icon{background:#e4f0e6;color:#6f9779}
+.wareef-customer .hub-refined .need-card.subscriptions i{border-color:#d3e2d4;background:#f8fbf7;color:#93aa97}
+@media (min-width:700px){.wareef-customer .needs-hub.hub-refined{max-width:736px;padding-inline:18px}.wareef-customer .hub-refined .hub-intro{padding:18px 20px}.wareef-customer .hub-refined .needs-grid>.need-card,.wareef-customer .hub-refined .needs-grid>.need-card.services{min-height:82px}}

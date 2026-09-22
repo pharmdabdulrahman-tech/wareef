@@ -1,0 +1,994 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: account
+    description: Signed-in Wareef account operations
+  - name: orders
+    description: Authenticated customer requests awaiting review
+  - name: providers
+    description: Approved service-provider catalogue
+  - name: provider-account
+    description: Provider application, settings, and assigned requests
+  - name: admin
+    description: Administrator-only provider review
+  - name: demo
+    description: Development-only labelled test controls
+  - name: storage
+    description: Private customer upload operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /me:
+    get:
+      operationId: getCurrentUser
+      tags: [account]
+      summary: Get the signed-in Wareef profile
+      responses:
+        "200":
+          description: Current Wareef profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Not signed in
+    patch:
+      operationId: updateCurrentUser
+      tags: [account]
+      summary: Update the signed-in user's editable profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserProfileUpdate"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "400":
+          description: Invalid profile information
+        "401":
+          description: Not signed in
+  /me/security-summary:
+    get:
+      operationId: getSecuritySummary
+      tags: [account]
+      summary: Explain the current account's enforced access
+      responses:
+        "200":
+          description: Current security summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SecuritySummary"
+        "401":
+          description: Not signed in
+  /orders:
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Submit a pending customer request
+      description: Creates a pending request only. This does not take payment or confirm fulfillment by a provider.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+      responses:
+        "201":
+          description: Request accepted as pending, or the original result for an identical idempotent retry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderCreated"
+        "400":
+          description: Invalid request
+        "401":
+          description: Not signed in
+        "409":
+          description: The idempotency key was already used with a different payload
+    get:
+      operationId: getOrders
+      tags: [orders]
+      summary: List the signed-in customer's requests
+      responses:
+        "200":
+          description: Requests owned by the signed-in customer
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [orders]
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Order"
+        "401":
+          description: Not signed in
+  /orders/{id}:
+    patch:
+      operationId: cancelOrder
+      tags: [orders]
+      summary: Atomically cancel the signed-in customer's pending or accepted service booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerCancellationInput"
+      responses:
+        "200":
+          description: Cancelled customer booking
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [order]
+                properties:
+                  order:
+                    $ref: "#/components/schemas/Order"
+        "400":
+          description: Invalid cancellation or missing reason
+        "401":
+          description: Not signed in
+        "409":
+          description: Booking is not owned service work in a cancellable state, or another transition won
+  /service-providers:
+    get:
+      operationId: getServiceProviders
+      tags: [providers]
+      summary: List genuinely approved providers
+      parameters:
+        - name: serviceId
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+      responses:
+        "200":
+          description: Approved providers, optionally filtered by supported service
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [providers]
+                properties:
+                  providers:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ServiceProvider"
+  /service-providers/{providerId}:
+    get:
+      operationId: getServiceProvider
+      tags: [providers]
+      summary: Get one genuinely approved provider
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Approved provider
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceProvider"
+        "404":
+          description: Provider not found or not approved
+  /provider/profile:
+    get:
+      operationId: getProviderProfile
+      tags: [provider-account]
+      summary: Get the signed-in user's provider application or settings
+      responses:
+        "200":
+          description: Provider profile, or null before one is created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderProfileEnvelope"
+        "401":
+          description: Not signed in
+    put:
+      operationId: updateProviderProfile
+      tags: [provider-account]
+      summary: Create or update provider application/settings fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProviderProfileEdit"
+      responses:
+        "200":
+          description: Saved profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderProfileEnvelope"
+        "400":
+          description: Invalid profile
+        "401":
+          description: Not signed in
+  /provider/profile/submit:
+    post:
+      operationId: submitProviderProfile
+      tags: [provider-account]
+      summary: Submit or resubmit a provider application for admin review
+      responses:
+        "200":
+          description: Submitted profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProviderProfileEnvelope"
+        "401":
+          description: Not signed in
+        "404":
+          description: Profile not found
+        "409":
+          description: Profile cannot be submitted
+  /provider/orders:
+    get:
+      operationId: getProviderOrders
+      tags: [provider-account]
+      summary: List service requests assigned to the approved owner
+      responses:
+        "200":
+          description: Assigned requests; exact location/photos are exposed only while accepted or after completion
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [orders]
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProviderOrder"
+        "401":
+          description: Not signed in
+        "403":
+          description: Approved owner role required
+  /provider/orders/{id}:
+    patch:
+      operationId: respondToProviderOrder
+      tags: [provider-account]
+      summary: Atomically respond to pending work or terminally update accepted work
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderResponseInput"
+      responses:
+        "200":
+          description: Updated request
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [order]
+                properties:
+                  order:
+                    $ref: "#/components/schemas/ProviderOrder"
+        "400":
+          description: Invalid decision or missing required reason
+        "401":
+          description: Not signed in
+        "403":
+          description: Owner role required
+        "409":
+          description: Request is not assigned work in the required prior state, or another transition won
+  /admin/providers:
+    get:
+      operationId: getAdminProviders
+      tags: [admin]
+      summary: List provider applications for review
+      responses:
+        "200":
+          description: Non-demo provider applications
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [providers]
+                properties:
+                  providers:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AdminProviderProfile"
+        "401":
+          description: Not signed in
+        "403":
+          description: Admin role required
+  /admin/providers/{id}:
+    patch:
+      operationId: reviewAdminProvider
+      tags: [admin]
+      summary: Approve, reject, or suspend a provider
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminProviderReview"
+      responses:
+        "200":
+          description: Reviewed provider
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [provider]
+                properties:
+                  provider:
+                    $ref: "#/components/schemas/AdminProviderProfile"
+        "400":
+          description: Invalid review or required reason missing
+        "401":
+          description: Not signed in
+        "403":
+          description: Admin role required
+        "404":
+          description: Application not found
+  /demo/orders/{id}/respond:
+    post:
+      operationId: respondToDemoOrder
+      tags: [demo]
+      summary: Development-only creator-controlled response for a demo-provider request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderResponseInput"
+      responses:
+        "200":
+          description: Clearly labelled test result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DemoOrderResponse"
+        "400":
+          description: Invalid decision
+        "401":
+          description: Not signed in
+        "403":
+          description: Not the creator or not a demo request
+        "404":
+          description: Route disabled outside development
+        "409":
+          description: Demo request already answered
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [storage]
+      summary: Request an authenticated private image upload URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadUrlRequest"
+      responses:
+        "200":
+          description: Presigned direct-upload URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadUrlResponse"
+        "400":
+          description: Invalid image metadata
+        "401":
+          description: Not signed in
+  /storage/objects/{objectPath}:
+    get:
+      operationId: getStorageObject
+      tags: [storage]
+      summary: Read an authenticated private object owned by the customer
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Object content
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+        "401":
+          description: Not signed in
+        "403":
+          description: Not the object owner
+        "404":
+          description: Object not found
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    UserRole:
+      type: string
+      enum: [customer, provider_owner, admin]
+    UserProfile:
+      type: object
+      required:
+        - id
+        - role
+        - displayName
+        - preferredLanguage
+        - onboardingComplete
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        role:
+          $ref: "#/components/schemas/UserRole"
+        displayName:
+          type: string
+        phone:
+          type: ["string", "null"]
+        city:
+          type: ["string", "null"]
+        preferredLanguage:
+          type: string
+          enum: [ar, en]
+        onboardingComplete:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    UserProfileUpdate:
+      type: object
+      properties:
+        displayName:
+          type: string
+          minLength: 2
+          maxLength: 100
+        phone:
+          type: ["string", "null"]
+          maxLength: 30
+        city:
+          type: ["string", "null"]
+          maxLength: 100
+        preferredLanguage:
+          type: string
+          enum: [ar, en]
+      additionalProperties: false
+    SecuritySummary:
+      type: object
+      required:
+        - role
+        - roleAssignedByServer
+        - accountDataIsPrivate
+        - explanation
+      properties:
+        role:
+          $ref: "#/components/schemas/UserRole"
+        roleAssignedByServer:
+          type: boolean
+        accountDataIsPrivate:
+          type: boolean
+        explanation:
+          type: string
+    OrderKind:
+      type: string
+      enum: [service, product]
+    OrderStatus:
+      type: string
+      enum: [pending, accepted, rejected, completed, cancelled]
+    CancellationActor:
+      type: string
+      enum: [customer, provider]
+    OrderItem:
+      type: object
+      additionalProperties: false
+      required: [id, name, quantity]
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 200
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        quantity:
+          type: integer
+          minimum: 1
+          maximum: 1000
+    ServiceProvider:
+      type: object
+      additionalProperties: false
+      required: [id, name, serviceIds, servicePrices, rating, distanceKm, earliestAvailableAt, isDemo]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        serviceIds:
+          type: array
+          items:
+            type: string
+        servicePrices:
+          $ref: "#/components/schemas/ServicePrices"
+        rating:
+          type: ["number", "null"]
+          minimum: 0
+          maximum: 5
+        distanceKm:
+          type: ["number", "null"]
+          minimum: 0
+        earliestAvailableAt:
+          type: ["string", "null"]
+        imageUrl:
+          type: string
+        isDemo:
+          type: boolean
+    ServiceBookingNeeds:
+      type: object
+      additionalProperties: false
+      properties:
+        approximateAreaM2:
+          type: number
+          exclusiveMinimum: 0
+        shrubCount:
+          type: integer
+          minimum: 1
+        standingTreeCount:
+          type: integer
+          minimum: 1
+        stumpOrRootAreaCount:
+          type: integer
+          minimum: 1
+        treeAccessDetails:
+          type: string
+          minLength: 1
+          maxLength: 2000
+    ServiceBooking:
+      type: object
+      additionalProperties: false
+      required: [location, taskIds, preferredTime]
+      properties:
+        gardenName:
+          type: string
+          maxLength: 200
+        location:
+          type: string
+          maxLength: 1000
+        taskIds:
+          type: array
+          maxItems: 20
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+        notes:
+          type: string
+          maxLength: 5000
+        needs:
+          $ref: "#/components/schemas/ServiceBookingNeeds"
+        preferredTime:
+          type: string
+          maxLength: 100
+        photoPaths:
+          type: array
+          maxItems: 10
+          uniqueItems: true
+          items:
+            type: string
+            pattern: "^/objects/uploads/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+$"
+    UploadUrlRequest:
+      type: object
+      additionalProperties: false
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        size:
+          type: integer
+          minimum: 1
+          maximum: 10485760
+        contentType:
+          type: string
+          enum: [image/jpeg, image/png, image/webp, image/heic]
+    UploadUrlResponse:
+      type: object
+      additionalProperties: false
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL:
+          type: string
+          format: uri
+        objectPath:
+          type: string
+    CreateOrderRequest:
+      type: object
+      additionalProperties: false
+      required: [kind, items, idempotencyKey]
+      properties:
+        kind:
+          $ref: "#/components/schemas/OrderKind"
+        items:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        details:
+          type: string
+          maxLength: 5000
+        providerId:
+          type: string
+          minLength: 1
+          maxLength: 200
+        booking:
+          $ref: "#/components/schemas/ServiceBooking"
+        idempotencyKey:
+          type: string
+          minLength: 1
+          maxLength: 200
+    OrderCreated:
+      type: object
+      additionalProperties: false
+      required: [id, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+        createdAt:
+          type: string
+          format: date-time
+    Order:
+      type: object
+      additionalProperties: false
+      required: [id, kind, items, status, responseReason, respondedAt, cancellationReason, cancelledAt, cancelledBy, completedAt, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          $ref: "#/components/schemas/OrderKind"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        details:
+          type: ["string", "null"]
+        providerId:
+          type: ["string", "null"]
+        booking:
+          oneOf:
+            - $ref: "#/components/schemas/ServiceBooking"
+            - type: "null"
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+        responseReason:
+          type: ["string", "null"]
+        respondedAt:
+          type: ["string", "null"]
+          format: date-time
+        cancellationReason:
+          type: ["string", "null"]
+        cancelledAt:
+          type: ["string", "null"]
+          format: date-time
+        cancelledBy:
+          oneOf:
+            - $ref: "#/components/schemas/CancellationActor"
+            - type: "null"
+        completedAt:
+          type: ["string", "null"]
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    ServicePrices:
+      type: object
+      additionalProperties:
+        type: ["number", "null"]
+        minimum: 0
+    ProviderStatus:
+      type: string
+      enum: [draft, pending, approved, rejected, suspended]
+    ProviderProfileEdit:
+      type: object
+      additionalProperties: false
+      required: [shopName, serviceIds, description, earliestAvailableAt, servicePrices]
+      properties:
+        shopName:
+          type: string
+          minLength: 2
+          maxLength: 150
+        serviceIds:
+          type: array
+          minItems: 1
+          maxItems: 50
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+        description:
+          type: string
+          minLength: 1
+          maxLength: 5000
+        earliestAvailableAt:
+          type: ["string", "null"]
+          format: date-time
+        servicePrices:
+          $ref: "#/components/schemas/ServicePrices"
+    ProviderProfile:
+      allOf:
+        - $ref: "#/components/schemas/ProviderProfileEdit"
+        - type: object
+          required: [id, status, statusReason, submittedAt, reviewedAt, isDemo, createdAt, updatedAt]
+          properties:
+            id:
+              type: string
+            status:
+              $ref: "#/components/schemas/ProviderStatus"
+            statusReason:
+              type: ["string", "null"]
+            submittedAt:
+              type: ["string", "null"]
+              format: date-time
+            reviewedAt:
+              type: ["string", "null"]
+              format: date-time
+            isDemo:
+              type: boolean
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+    ProviderProfileEnvelope:
+      type: object
+      required: [profile]
+      properties:
+        profile:
+          oneOf:
+            - $ref: "#/components/schemas/ProviderProfile"
+            - type: "null"
+    AdminProviderProfile:
+      allOf:
+        - $ref: "#/components/schemas/ProviderProfile"
+        - type: object
+          required: [applicantName]
+          properties:
+            applicantName:
+              type: string
+    ProviderBooking:
+      type: object
+      additionalProperties: false
+      required: [location, taskIds, preferredTime, photoPaths]
+      properties:
+        gardenName:
+          type: string
+        location:
+          type: ["string", "null"]
+        taskIds:
+          type: array
+          items:
+            type: string
+        notes:
+          type: string
+        needs:
+          $ref: "#/components/schemas/ServiceBookingNeeds"
+        preferredTime:
+          type: string
+        photoPaths:
+          type: array
+          items:
+            type: string
+    ProviderOrder:
+      type: object
+      required: [id, kind, items, status, responseReason, respondedAt, cancellationReason, cancelledAt, cancelledBy, completedAt, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          $ref: "#/components/schemas/OrderKind"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItem"
+        details:
+          type: ["string", "null"]
+        booking:
+          oneOf:
+            - $ref: "#/components/schemas/ProviderBooking"
+            - type: "null"
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+        responseReason:
+          type: ["string", "null"]
+        respondedAt:
+          type: ["string", "null"]
+          format: date-time
+        cancellationReason:
+          type: ["string", "null"]
+        cancelledAt:
+          type: ["string", "null"]
+          format: date-time
+        cancelledBy:
+          oneOf:
+            - $ref: "#/components/schemas/CancellationActor"
+            - type: "null"
+        completedAt:
+          type: ["string", "null"]
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    OrderResponseInput:
+      oneOf:
+        - type: object
+          additionalProperties: false
+          required: [status]
+          properties:
+            status:
+              type: string
+              enum: [accepted, completed]
+            reason:
+              type: string
+              maxLength: 2000
+        - type: object
+          additionalProperties: false
+          required: [status, reason]
+          properties:
+            status:
+              type: string
+              const: rejected
+            reason:
+              type: string
+              minLength: 1
+              maxLength: 2000
+        - type: object
+          additionalProperties: false
+          required: [status, reason]
+          properties:
+            status:
+              type: string
+              const: cancelled
+            reason:
+              type: string
+              minLength: 1
+              maxLength: 1000
+    CustomerCancellationInput:
+      type: object
+      additionalProperties: false
+      required: [status, reason]
+      properties:
+        status:
+          type: string
+          const: cancelled
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1000
+    AdminProviderReview:
+      type: object
+      additionalProperties: false
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [approved, rejected, suspended]
+        reason:
+          type: string
+          maxLength: 2000
+    DemoOrderResponse:
+      type: object
+      required: [testMode, testStatus, order]
+      properties:
+        testMode:
+          type: boolean
+          const: true
+        testStatus:
+          type: string
+        order:
+          type: object
+          required: [id, status, responseReason, respondedAt, cancellationReason, cancelledAt, cancelledBy, completedAt]
+          properties:
+            id:
+              type: string
+              format: uuid
+            status:
+              $ref: "#/components/schemas/OrderStatus"
+            responseReason:
+              type: ["string", "null"]
+            respondedAt:
+              type: ["string", "null"]
+              format: date-time
+            cancellationReason:
+              type: ["string", "null"]
+            cancelledAt:
+              type: ["string", "null"]
+              format: date-time
+            cancelledBy:
+              oneOf:
+                - $ref: "#/components/schemas/CancellationActor"
+                - type: "null"
+            completedAt:
+              type: ["string", "null"]
+              format: date-time
+

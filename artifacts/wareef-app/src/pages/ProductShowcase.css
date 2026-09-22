@@ -1,0 +1,410 @@
+.wareef-customer .product-showcase {
+  margin: 26px 16px 24px;
+  padding: 18px 0 4px;
+  border-top: 1px solid #cfe1cd;
+  color: #254f38;
+}
+.wareef-customer .product-showcase-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-end;
+}
+.wareef-customer .product-showcase-heading p,
+.wareef-customer .dialog-kicker {
+  margin: 0;
+  color: #497456;
+  font:
+    700 9px "DM Mono",
+    monospace;
+  letter-spacing: 0.08em;
+}
+.wareef-customer .product-showcase h2 {
+  margin: 5px 0 0;
+  font-size: 21px;
+  line-height: 1.25;
+}
+.wareef-customer .product-showcase-heading > span {
+  max-width: 112px;
+  color: #497456;
+  font-size: 9px;
+  line-height: 1.45;
+  text-align: end;
+}
+.wareef-customer .product-showcase-intro {
+  margin: 10px 0 18px;
+  color: #587060;
+  font-size: 11px;
+  line-height: 1.65;
+}
+.wareef-customer .showcase-rows {
+  display: grid;
+  gap: 19px;
+}
+.wareef-customer .shop-product-row {
+  min-width: 0;
+}
+.wareef-customer .shop-product-row header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+.wareef-customer .shop-product-row h3 {
+  margin: 0;
+  color: #1f5c43;
+  font-size: 14px;
+}
+.wareef-customer .shop-product-row header p {
+  margin: 3px 0 0;
+  color: #6a7d6d;
+  font-size: 9px;
+}
+.wareef-customer .shop-product-row header button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  border: 0;
+  background: transparent;
+  color: #1f5c43;
+  font: 800 10px inherit;
+  cursor: pointer;
+}
+.wareef-customer .shop-product-row header svg {
+  width: 14px;
+}
+.wareef-customer .product-strip {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  padding: 2px 1px 10px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: #a8c5ab transparent;
+}
+.wareef-customer .product-card,
+.wareef-customer .view-all-tile {
+  position: relative;
+  flex: 0 0 116px;
+  min-height: 145px;
+  scroll-snap-align: start;
+  border: 1px solid #d2e2d2;
+  border-radius: 15px;
+  background: #fcfdfa;
+  color: #254f38;
+  text-align: start;
+  padding: 8px;
+  font-family: inherit;
+}
+.wareef-customer .product-card-open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  font-family: inherit;
+  cursor: pointer;
+}
+.wareef-customer .product-card b,
+.wareef-customer .product-card small {
+  display: block;
+}
+.wareef-customer .product-card b {
+  overflow: hidden;
+  margin-top: 7px;
+  font-size: 10px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wareef-customer .product-card small {
+  margin-top: 3px;
+  color: #637a68;
+  font-size: 8px;
+  line-height: 1.35;
+}
+.wareef-customer .product-illustration,
+.wareef-customer .product-detail-art {
+  display: block;
+  height: 77px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #f2f4ee;
+}
+.wareef-customer .product-illustration img,
+.wareef-customer .product-detail-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  object-fit: contain;
+  padding: 4px;
+}
+.wareef-customer .product-illustration.plant img,
+.wareef-customer .product-detail-art.plant img {
+  object-fit: cover;
+  padding: 0;
+}
+.wareef-customer .view-all-tile {
+  display: grid;
+  place-content: center;
+  gap: 7px;
+  border-style: dashed;
+  background: #eef5eb;
+  text-align: center;
+}
+.wareef-customer .view-all-tile > span {
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1f5c43;
+  color: #fff;
+}
+.wareef-customer .view-all-tile span svg {
+  width: 17px;
+}
+.wareef-customer .view-all-tile b {
+  font-size: 10px;
+}
+.wareef-customer .view-all-tile small {
+  color: #56715e;
+  font-size: 8px;
+}
+.wareef-customer .product-card-open:focus-visible,
+.wareef-customer .product-favorite:focus-visible,
+.wareef-customer .view-all-tile:focus-visible,
+.wareef-customer .shop-product-row header button:focus-visible,
+.wareef-customer .showcase-dialog button:focus-visible {
+  outline: 2px solid #1f5c43;
+  outline-offset: 3px;
+}
+.wareef-customer .product-favorite {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #cadcc8;
+  border-radius: 50%;
+  background: #fffffff2;
+  color: #466b51;
+  cursor: pointer;
+}
+.wareef-customer .product-favorite.saved {
+  border-color: #b8d1b9;
+  background: #edf6eb;
+  color: #1f6847;
+}
+.wareef-customer .product-favorite svg {
+  width: 16px;
+  height: 16px;
+}
+.wareef-customer .product-card > .product-favorite {
+  position: absolute;
+  z-index: 2;
+  top: 13px;
+  right: 13px;
+}
+.wareef-customer[dir="rtl"] .product-card > .product-favorite {
+  right: auto;
+  left: 13px;
+}
+.wareef-customer .showcase-overlay {
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+  display: grid;
+  place-items: end center;
+  background: #173b2a80;
+  padding: 16px;
+}
+.wareef-customer .showcase-dialog {
+  position: relative;
+  width: min(100%, 580px);
+  max-height: min(82dvh, 720px);
+  overflow: auto;
+  border: 1px solid #c6d8c4;
+  border-radius: 22px;
+  background: #f9fcf6;
+  color: #254f38;
+  padding: 24px 18px 20px;
+  box-shadow: 0 22px 55px #173b2a42;
+}
+.wareef-customer .showcase-dialog h2 {
+  margin: 7px 35px 7px 0;
+  font-size: 23px;
+}
+.wareef-customer[dir="rtl"] .showcase-dialog h2 {
+  margin-right: 0;
+  margin-left: 35px;
+}
+.wareef-customer .showcase-close {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #c5d7c4;
+  border-radius: 50%;
+  background: #fff;
+  color: #1f5c43;
+  cursor: pointer;
+}
+.wareef-customer[dir="rtl"] .showcase-close {
+  right: auto;
+  left: 13px;
+}
+.wareef-customer .showcase-close svg {
+  width: 18px;
+}
+.wareef-customer .dialog-note,
+.wareef-customer .detail-description {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #56715e;
+}
+.wareef-customer .dialog-note {
+  padding: 10px 11px;
+  border-radius: 11px;
+  background: #eaf3e8;
+}
+.wareef-customer .catalogue-grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+.wareef-customer .catalogue-product {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  border: 1px solid #d4e1d3;
+  border-radius: 13px;
+  background: #fff;
+  padding: 7px;
+  color: #254f38;
+  text-align: start;
+  font-family: inherit;
+}
+.wareef-customer .catalogue-product-open {
+  display: grid;
+  grid-template-columns: 51px 1fr 18px;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  font-family: inherit;
+  cursor: pointer;
+}
+.wareef-customer .catalogue-product .product-illustration {
+  height: 46px;
+}
+.wareef-customer .catalogue-product b,
+.wareef-customer .catalogue-product small {
+  display: block;
+}
+.wareef-customer .catalogue-product b {
+  font-size: 11px;
+}
+.wareef-customer .catalogue-product small {
+  margin-top: 3px;
+  color: #637a68;
+  font-size: 9px;
+}
+.wareef-customer .catalogue-product-open > svg {
+  width: 15px;
+  color: #497456;
+}
+.wareef-customer .dialog-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: #1f5c43;
+  font: 800 10px inherit;
+  cursor: pointer;
+}
+.wareef-customer .dialog-back svg {
+  width: 15px;
+}
+.wareef-customer .product-detail-art {
+  width: 100%;
+  height: 190px;
+  margin: 14px 0;
+}
+.wareef-customer .product-detail-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.wareef-customer .product-detail-heading > div {
+  min-width: 0;
+}
+.wareef-customer .product-detail-heading h2 {
+  margin-inline-end: 0;
+}
+.wareef-customer .product-detail-heading > .product-favorite {
+  flex: none;
+}
+.wareef-customer .detail-shop {
+  margin: 0;
+  color: #497456;
+  font-size: 11px;
+  font-weight: 800;
+}
+.wareef-customer .illustrative-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  padding: 12px;
+  border: 1px solid #c9ddc9;
+  border-radius: 12px;
+  background: #fff;
+}
+.wareef-customer .illustrative-price span {
+  font-size: 10px;
+  color: #587060;
+}
+.wareef-customer .illustrative-price b {
+  font:
+    800 17px "DM Mono",
+    monospace;
+  color: #1f5c43;
+}
+@media (min-width: 700px) {
+  .wareef-customer .product-showcase {
+    margin-inline: 44px;
+  }
+  .wareef-customer .product-card,
+  .wareef-customer .view-all-tile {
+    flex-basis: 135px;
+  }
+  .wareef-customer .showcase-overlay {
+    place-items: center;
+  }
+  .wareef-customer .showcase-dialog {
+    padding: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wareef-customer .product-strip {
+    scroll-behavior: auto;
+  }
+}

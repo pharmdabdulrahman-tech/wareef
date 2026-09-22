@@ -1,0 +1,57 @@
+.status-cancelled {
+  background: #f9e8e5;
+  color: #963c36;
+}
+
+.status-completed {
+  background: #e6f3e7;
+  color: #216642;
+}
+
+.order-detail .terminal-reason {
+  padding: 10px;
+  border-inline-start: 3px solid #a3473f;
+  border-radius: 8px;
+  background: #fbefeb;
+  color: #783a35;
+}
+
+.order-detail .order-metadata {
+  color: #596d63;
+}
+
+.terminal-actions {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #d6e0d8;
+}
+
+.terminal-actions > p {
+  color: #667970;
+}
+
+.terminal-confirm {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #d7caa5;
+  border-radius: 12px;
+  background: #fffaf0;
+}
+
+.terminal-confirm > p {
+  color: #6f591f;
+}
+
+.terminal-confirm label {
+  display: block;
+  margin-top: 12px;
+  color: #61736a;
+  font-size: 11px;
+}
+
+.terminal-confirm label small {
+  display: block;
+  margin-top: 5px;
+  color: #708178;
+  text-align: end;
+}

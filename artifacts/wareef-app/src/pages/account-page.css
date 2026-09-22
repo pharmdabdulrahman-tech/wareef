@@ -1,0 +1,490 @@
+.ghars.wareef-customer .screen.account-page {
+  padding-inline: 0;
+  padding-bottom: 90px;
+  overflow-y: auto;
+  background: #f8faf6;
+  width: 100%;
+}
+
+.ghars.wareef-customer .account-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 14px;
+}
+
+.ghars.wareef-customer[dir="rtl"] .account-header {
+  flex-direction: row-reverse;
+}
+.ghars.wareef-customer[dir="ltr"] .account-header {
+  flex-direction: row;
+}
+
+.ghars.wareef-customer .account-page-title {
+  padding: 0 14px 1rem;
+  text-align: right;
+}
+
+.ghars.wareef-customer[dir="ltr"] .account-page-title {
+  text-align: left;
+}
+
+.ghars.wareef-customer .account-page-title h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1f2f26;
+  margin: 0;
+}
+
+.ghars.wareef-customer .welcome-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 14px 1rem;
+  padding: 12px;
+  border: 1px solid #dce8dc;
+  border-radius: 16px;
+  background: #eef6eb;
+  height: 80px;
+  flex-wrap: nowrap;
+}
+
+.ghars.wareef-customer .account-avatar-large {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #1f5c43;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 800;
+  border: none;
+}
+
+.ghars.wareef-customer .welcome-copy {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+
+.ghars.wareef-customer .welcome-copy b { 
+  color: #1f2f26; 
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ghars.wareef-customer .welcome-copy small { 
+  color: #5f7065; 
+  font-size: 11px; 
+  line-height: 1.3; 
+}
+
+.ghars.wareef-customer .welcome-action {
+  flex: 0 0 auto;
+  border: 1px solid #dce8dc;
+  border-radius: 8px;
+  padding: 6px 12px;
+  background: white;
+  color: #1f2f26;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0;
+}
+
+.ghars.wareef-customer .account-stats-row {
+  display: flex;
+  background: white;
+  border: 1px solid #f1f6f1;
+  border-radius: 16px;
+  margin: 0 14px 1.5rem;
+  padding: 12px 0;
+  align-items: center;
+  height: 64px;
+}
+
+.ghars.wareef-customer .stat-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  position: relative;
+}
+
+.ghars.wareef-customer .stat-col:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  background: #f1f6f1;
+}
+
+.ghars.wareef-customer .stat-col b {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f5c43;
+  line-height: 1;
+}
+
+.ghars.wareef-customer .stat-col small {
+  font-size: 11px;
+  color: #5f7065;
+}
+
+.ghars.wareef-customer .stat-retry {
+  margin-top: 4px;
+  border: 0;
+  background: transparent;
+  color: #a13d35;
+  font: inherit;
+  font-size: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ghars.wareef-customer .account-section {
+  margin-bottom: 1.5rem;
+}
+
+.ghars.wareef-customer .account-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #5f7065;
+  margin: 0 14px 8px;
+}
+
+.ghars.wareef-customer .account-nav-list {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  margin: 0 14px;
+}
+
+.ghars.wareef-customer .account-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  height: 58px;
+  background: white;
+  border-left: 1px solid #f1f6f1;
+  border-right: 1px solid #f1f6f1;
+  border-top: 1px solid #f1f6f1;
+  border-bottom: none;
+  text-align: right;
+  width: 100%;
+  cursor: pointer;
+  color: #1f2f26;
+}
+
+.ghars.wareef-customer[dir="ltr"] .account-nav-item {
+  text-align: left;
+}
+
+.ghars.wareef-customer .account-nav-item:first-child {
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.ghars.wareef-customer .account-nav-item:last-child {
+  border-bottom: 1px solid #f1f6f1;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.ghars.wareef-customer .account-nav-item.disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+.ghars.wareef-customer .account-nav-item .nav-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.ghars.wareef-customer .language-row {
+  display: flex;
+  flex: 1;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  text-align: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ghars.wareef-customer .account-nav-item .nav-content b {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ghars.wareef-customer .account-nav-item .nav-content small {
+  font-size: 11px;
+  color: #5f7065;
+}
+
+.ghars.wareef-customer .account-nav-item .nav-icon {
+  margin-right: 12px;
+  color: #1f5c43;
+  width: 20px;
+  height: 20px;
+}
+.ghars.wareef-customer[dir="rtl"] .account-nav-item .nav-icon {
+  margin-right: 0;
+  margin-left: 12px;
+}
+
+.ghars.wareef-customer .account-nav-item .nav-arrow {
+  color: #8fa396;
+  width: 16px;
+  height: 16px;
+}
+
+.ghars.wareef-customer .account-panel {
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  margin: 8px 14px 0;
+  border: 1px solid #f1f6f1;
+}
+
+.ghars.wareef-customer .account-panel.privacy-panel p {
+  font-size: 13px;
+  color: #5f7065;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
+.ghars.wareef-customer .account-panel.privacy-panel b {
+  display: block;
+  font-size: 14px;
+  color: #1f2f26;
+  margin-bottom: 4px;
+}
+
+.ghars.wareef-customer .account-panel.privacy-panel .security-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #1f2f26;
+}
+
+.ghars.wareef-customer .inline-error,
+.ghars.wareef-customer .form-error {
+  color: #8d342f;
+}
+
+.ghars.wareef-customer .inline-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ghars.wareef-customer .inline-error button,
+.ghars.wareef-customer .inline-save {
+  border: 1px solid #b7cab9;
+  border-radius: 6px;
+  background: white;
+  color: #1f5c43;
+  padding: 4px 8px;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.ghars.wareef-customer .form-error {
+  margin: 0;
+  font-size: 12px;
+}
+
+.ghars.wareef-customer .account-role-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 14px 0;
+}
+
+.ghars.wareef-customer .account-role-links a {
+  color: #1f5c43;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+.ghars.wareef-customer .account-panel.privacy-panel .security-row svg {
+  color: #1f5c43;
+}
+
+.ghars.wareef-customer .account-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border: 1px solid #f1f6f1;
+  border-radius: 12px;
+  margin: 8px 14px 0;
+}
+
+.ghars.wareef-customer .account-input-group label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2f26;
+}
+
+.ghars.wareef-customer .account-input-group label > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ghars.wareef-customer .account-input-group label small {
+  font-weight: 400;
+  color: #5f7065;
+  font-size: 11px;
+}
+
+.ghars.wareef-customer .account-input-group input {
+  background: white;
+  border: 1px solid #dce8dc;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #1f2f26;
+  font-family: inherit;
+  outline: none;
+}
+
+.ghars.wareef-customer .account-input-group input:focus {
+  border-color: #1f5c43;
+}
+
+.ghars.wareef-customer .account-input-group input:disabled {
+  color: #7c887f;
+  background: #f5f7f3;
+  cursor: not-allowed;
+}
+
+.ghars.wareef-customer .save-btn {
+  margin: 0;
+  width: 100%;
+}
+
+.ghars.wareef-customer .support-note-box {
+  background: white;
+  border: 1px solid #f1f6f1;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 0 14px 1.5rem;
+}
+
+.ghars.wareef-customer .support-note-box b {
+  display: block;
+  font-size: 14px;
+  color: #1f2f26;
+  margin-bottom: 4px;
+}
+
+.ghars.wareef-customer .support-note-box p {
+  font-size: 12px;
+  color: #5f7065;
+  margin-bottom: 12px;
+}
+
+.ghars.wareef-customer .support-note-box input {
+  width: 100%;
+  background: white;
+  border: 1px solid #dce8dc;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #1f2f26;
+  margin-bottom: 8px;
+}
+
+.ghars.wareef-customer .support-note-box small {
+  display: block;
+  font-size: 11px;
+  color: #8fa396;
+}
+
+.ghars.wareef-customer input.account-switch {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 32px !important;
+  min-width: 0 !important;
+  height: 20px;
+  min-height: 20px;
+  max-height: 20px;
+  flex: 0 0 32px;
+  background: #dce8dc;
+  border-radius: 10px;
+  position: relative;
+  cursor: not-allowed;
+  transition: background 0.2s;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ghars.wareef-customer input.account-switch:checked {
+  background: #1f5c43;
+}
+
+.ghars.wareef-customer input.account-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.ghars.wareef-customer[dir="rtl"] input.account-switch::after {
+  left: auto;
+  right: 2px;
+}
+
+.ghars.wareef-customer input.account-switch:checked::after {
+  transform: translateX(12px);
+}
+.ghars.wareef-customer[dir="rtl"] input.account-switch:checked::after {
+  transform: translateX(-12px);
+}
+
+.ghars.wareef-customer .customer-nav .reserve-now {
+  background: #1f5c43 !important;
+  color: white !important;
+}
+
+.ghars.wareef-customer .customer-nav .reserve-now * {
+  color: white !important;
+}
+
+.account-surface .account-header { border: 0; background: transparent; }
+.account-surface .account-header .account-brand { display: flex; gap: 8px; flex-direction: row; }
+.account-surface .account-brand small { display: inline; font-size: 10px; }
+.account-surface .account-brand > span { display: inline; color: #9bad9e; }
+.account-surface .account-page .account-input-group label { margin: 0; }
+.account-surface .account-page .account-input-group { gap: 12px; }
+.account-surface .account-page .account-input-group input { min-height: 36px; padding: 8px; font-size: 12px; }

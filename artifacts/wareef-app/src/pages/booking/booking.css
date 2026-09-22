@@ -1,0 +1,38 @@
+.wareef-customer .icon-back{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-weight:700}
+.wareef-customer .icon-back>span,.wareef-customer .round-arrow,.wareef-customer .direction-circle{display:grid;place-items:center;flex:none;width:36px;height:36px;border:1px solid #c7dcc7;border-radius:50%;background:#f7fbf5;color:#1f5c43}
+.wareef-customer .icon-back svg,.wareef-customer .round-arrow svg,.wareef-customer .direction-circle svg{width:18px;height:18px}
+.wareef-customer .all-services-link .round-arrow{width:34px;height:34px}
+.wareef-customer .need-card i svg{width:19px;height:19px}
+.wareef-customer .booking-flow{max-width:720px}
+.wareef-customer .booking-flow .provider-empty{display:grid;justify-items:center;gap:9px;min-height:230px;margin-top:8px;padding:30px 20px;border:1px dashed #b6cdb8;border-radius:20px;background:#f5f9f2;color:var(--primary);text-align:center}
+.wareef-customer .booking-flow .provider-empty>svg{width:30px;height:30px}
+.wareef-customer .booking-flow .provider-empty h2,.wareef-customer .booking-flow .provider-empty p{margin:0}
+.wareef-customer .booking-flow .provider-empty h2{font-size:17px}
+.wareef-customer .booking-flow .provider-empty p{max-width:360px;color:var(--muted);font-size:11px;line-height:1.7}
+.wareef-customer .booking-flow .shop-image{display:grid;place-items:center;background:#eaf3e8;color:#1f5c43}
+.wareef-customer .booking-flow .shop-image{background-position:center;background-size:cover}
+.wareef-customer .booking-flow .shop-image>svg{width:34px;height:34px}
+.wareef-customer .booking-flow .corner-rating{display:flex;align-items:center;gap:3px}
+.wareef-customer .booking-flow .corner-rating svg{width:11px;height:11px;fill:currentColor}
+.wareef-customer .booking-flow .shop-details p{display:flex;align-items:center;gap:4px}
+.wareef-customer .booking-flow .shop-details p svg{width:12px;height:12px}
+.wareef-customer .provider-profile{display:flex;align-items:center;gap:13px;margin:8px 0 18px;padding:15px;border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.wareef-customer .provider-avatar{display:grid;place-items:center;overflow:hidden;width:62px;height:62px;border-radius:17px;background:var(--soft);color:var(--primary)}
+.wareef-customer .provider-avatar{background-position:center;background-size:cover}
+.wareef-customer .provider-avatar svg{width:27px}
+.wareef-customer .provider-profile h2{margin:0 0 6px}
+.wareef-customer .provider-profile .rating{display:flex;align-items:center;gap:4px}
+.wareef-customer .provider-profile .rating svg{width:12px;fill:currentColor}
+.wareef-customer .booking-form{display:grid;gap:12px}
+.wareef-customer .booking-form>label{display:grid;gap:6px;margin:0;color:var(--ink);font-size:11px;font-weight:800}
+.wareef-customer .booking-form input,.wareef-customer .booking-form textarea{width:100%;min-height:42px;border:1px solid #cfe1cd;border-radius:10px;background:#fbfdf9;padding:9px;color:var(--ink);font:12px inherit}
+.wareef-customer .booking-form textarea{min-height:88px;resize:vertical}
+.wareef-customer .full{width:100%}
+.wareef-customer .booking-flow .notice{margin-top:12px;padding:11px;border-radius:12px;background:var(--soft);color:var(--primary);font-size:10px;line-height:1.7}
+.wareef-customer .demo-optional-note{margin:8px 0 12px;color:#557255;font-size:10px;font-weight:700}
+.wareef-customer .draft-photo-preview{display:block;width:82px;height:82px;border-radius:10px;background-position:center;background-size:cover}
+.wareef-customer .order-history-card{grid-template-columns:32px 1fr auto}
+.wareef-customer .order-booking-summary{grid-column:1/-1;display:grid;gap:7px;margin-top:5px;padding-top:10px;border-top:1px solid var(--line)}
+.wareef-customer .order-booking-summary p{display:grid;grid-template-columns:minmax(92px,.35fr) 1fr;gap:10px;margin:0;font-size:10px;line-height:1.6}
+.wareef-customer .order-booking-summary p b{color:var(--ink)}
+.wareef-customer .order-booking-summary p span{color:var(--muted);overflow-wrap:anywhere}
